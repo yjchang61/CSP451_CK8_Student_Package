@@ -24,3 +24,7 @@ UrbanEats is a multi-container food delivery platform built using Docker Compose
 ## Architecture
 The system uses Nginx as a reverse proxy to route traffic to web and API services. Backend services communicate over a custom Docker bridge network (urbaneats-net).
 
+## Screenshots
+
+Screenshots of running containers, API response, RabbitMQ UI, and network inspection are included in the screenshots/ folder.
+
