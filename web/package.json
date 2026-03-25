@@ -1,0 +1,13 @@
+{
+  "name": "urbaneats-web",
+  "version": "1.0.0",
+  "description": "UrbanEats Customer Web App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Static build complete'"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

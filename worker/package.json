@@ -1,0 +1,12 @@
+{
+  "name": "urbaneats-worker",
+  "version": "1.0.0",
+  "description": "UrbanEats Notification Worker",
+  "main": "worker.js",
+  "scripts": {
+    "start": "node worker.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3"
+  }
+}

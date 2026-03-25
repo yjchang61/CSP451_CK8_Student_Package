@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanEats — Fresh Food Delivered Fast</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .container { text-align: center; padding: 2rem; max-width: 800px; }
+    h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+    h1 span { color: #e94560; }
+    .tagline { font-size: 1.3rem; color: #a8a8b3; margin-bottom: 2rem; }
+    .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+    .status-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 1.5rem; transition: transform 0.2s;
+    }
+    .status-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.08); }
+    .status-card h3 { color: #e94560; margin-bottom: 0.5rem; }
+    .status-card p { color: #a8a8b3; font-size: 0.9rem; }
+    .badge {
+      display: inline-block; background: #e94560; color: #fff;
+      padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.85rem; margin-top: 1rem;
+    }
+    #api-status { margin-top: 2rem; font-size: 0.9rem; color: #a8a8b3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍕 Urban<span>Eats</span></h1>
+    <p class="tagline">Fresh food, delivered fast — powered by containers</p>
+    <span class="badge">✅ Web Service Online</span>
+    <div class="status-grid">
+      <div class="status-card">
+        <h3>📦 Orders API</h3>
+        <p>RESTful backend service handling order processing</p>
+      </div>
+      <div class="status-card">
+        <h3>🗄️ PostgreSQL</h3>
+        <p>Persistent data store for orders and customers</p>
+      </div>
+      <div class="status-card">
+        <h3>⚡ Redis Cache</h3>
+        <p>In-memory caching for fast responses</p>
+      </div>
+      <div class="status-card">
+        <h3>📨 RabbitMQ</h3>
+        <p>Message queue for async notifications</p>
+      </div>
+      <div class="status-card">
+        <h3>🔔 Worker</h3>
+        <p>Background notification processing</p>
+      </div>
+      <div class="status-card">
+        <h3>🌐 Nginx Proxy</h3>
+        <p>Reverse proxy routing traffic</p>
+      </div>
+    </div>
+    <p id="api-status">Checking API connection...</p>
+  </div>
+  <script>
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('api-status').innerHTML =
+          '✅ API Connected — ' + d.service + ' is ' + d.status;
+      })
+      .catch(() => {
+        document.getElementById('api-status').innerHTML =
+          '⏳ API connecting...';
+      });
+  </script>
+</body>
+</html>

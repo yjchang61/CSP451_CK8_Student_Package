@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./web
+    container_name: urbaneats-web
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://api:4000
+    depends_on:
+      - api
+    networks:
+      - urbaneats-net
+
+  api:
+    build: ./api
+    container_name: urbaneats-api
+    restart: unless-stopped
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - REDIS_HOST=cache
+      - REDIS_URL=redis://cache:6379
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    depends_on:
+      - db
+      - cache
+      - queue
+    networks:
+      - urbaneats-net
+
+  db:
+    image: postgres:15-alpine
+    container_name: urbaneats-db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - urbaneats-net
+
+  cache:
+    image: redis:7-alpine
+    container_name: urbaneats-cache
+    command: redis-server --appendonly yes
+    networks:
+      - urbaneats-net
+
+  queue:
+    image: rabbitmq:3-management-alpine
+    container_name: urbaneats-queue
+    ports:
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - urbaneats-net
+
+  worker:
+    build: ./worker
+    container_name: urbaneats-worker
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    depends_on:
+      - queue
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    networks:
+      - urbaneats-net
+
+  proxy:
+    image: nginx:alpine
+    container_name: urbaneats-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+      - api
+    networks:
+      - urbaneats-net
+
+volumes:
+  db_data:
+
+networks:
+  urbaneats-net:
+    driver: bridge
